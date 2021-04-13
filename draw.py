@@ -15,14 +15,17 @@ def add_circle( points, cx, cy, cz, r, step ):
 
 def add_curve( points, x0, y0, x1, y1, x2, y2, x3, y3, step, curve_type ):
     if curve_type == 'hermite':
-        aX = (2 * x0) - (2 * x1) + x2 + x3
-        bX = (-3 * x0) + (3 * x1) - (2 * x2) - x3
-        cX = x2
-        dX = x0
-        aY = (2 * y0) - (2 * y1) + y2 + y3
-        bY = (-3 * y0) + (3 * y1) - (2 * y2) - y3
-        cY = y2
-        dY = y0
+        h = make_hermite()
+        xCoefs = generate_curve_coefs(x0, x1, x2, x3, h)
+        aX = xCoefs[0][0]
+        bX = xCoefs[0][1]
+        cX = xCoefs[0][2]
+        dX = xCoefs[0][3]
+        yCoefs = generate_curve_coefs(y0, y1, y2, y3, h)
+        aY = yCoefs[0][0]
+        bY = yCoefs[0][1]
+        cY = yCoefs[0][2]
+        dY = yCoefs[0][3]
         t = 0
         while t <= 1:
             pX0 = (aX * (t ** 3)) + (bX * (t ** 2)) + (cX * t) + dX
@@ -32,14 +35,17 @@ def add_curve( points, x0, y0, x1, y1, x2, y2, x3, y3, step, curve_type ):
             pY1 = (aY * (t ** 3)) + (bY * (t ** 2)) + (cY * t) + dY
             add_edge(points, pX0, pY0, 0, pX1, pY1, 0)
     elif curve_type == 'bezier':
-        aX = -x0 + (3 * x1) - (3 * x2) + x3
-        bX = (3 * x0) - (6 * x1) + (3 * x2)
-        cX = (-3 * x0) + (3 * x1)
-        dX = x0
-        aY = -y0 + (3 * y1) - (3 * y2) + y3
-        bY = (3 * y0) - (6 * y1) + (3 * y2)
-        cY = (-3 * y0) + (3 * y1)
-        dY = y0
+        b = make_bezier()
+        xCoefs = generate_curve_coefs(x0, x1, x2, x3, b)
+        aX = xCoefs[0][0]
+        bX = xCoefs[0][1]
+        cX = xCoefs[0][2]
+        dX = xCoefs[0][3]
+        yCoefs = generate_curve_coefs(y0, y1, y2, y3, b)
+        aY = yCoefs[0][0]
+        bY = yCoefs[0][1]
+        cY = yCoefs[0][2]
+        dY = yCoefs[0][3]
         t = 0
         while t <= 1:
             pX0 = (aX * (t ** 3)) + (bX * (t ** 2)) + (cX * t) + dX
